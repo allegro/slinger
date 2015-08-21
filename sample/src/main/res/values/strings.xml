@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Slinger Example</string>
+
+    <string name="activity_about">Slinger About Activity</string>
+    <string name="activity_contact">Slinger Contact Activity</string>
+    <string name="activity_navigator">Slinger Example Activity</string>
+</resources>

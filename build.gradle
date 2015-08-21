@@ -1,0 +1,51 @@
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
+    }
+	
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.3.1'
+        classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
+	}
+}
+
+plugins {
+    id 'pl.allegro.tech.build.axion-release' version '1.2.4'
+}
+
+apply plugin: 'io.codearte.nexus-staging'
+
+nexusStaging {
+    packageGroup = 'pl.allegro'
+}
+
+allprojects {
+    group = GROUP
+    version = scmVersion.version
+
+    repositories {
+        mavenLocal()
+        jcenter()
+        maven { url "http://dl.bintray.com/populov/maven" }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url 'https://maven.fabric.io/public' }
+    }
+}
+
+ext {
+  compileSdkVersion = 22
+  buildToolsVersion = '22.0.1'
+  minSdkVersion = 9
+  targetSdkVersion = 22
+
+  supportAnnotations = 'com.android.support:support-annotations:22.2.0'
+
+  junit = 'junit:junit:4.12'
+  robolectric = 'org.robolectric:robolectric:3.0'
+  mavenAntTasks = 'org.apache.maven:maven-ant-tasks:2.1.3'
+  mockitoCore = 'org.mockito:mockito-core:1.10.19'
+  truth = 'com.google.truth:truth:0.26'
+}
