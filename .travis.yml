@@ -19,4 +19,4 @@ cache:
     - $HOME/.m2
     - $HOME/.gradle
 
-script: ./gradlew build test --info
+script: ./gradlew build test
