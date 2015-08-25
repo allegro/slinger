@@ -1,2 +1,2 @@
-rootProject.name='com.allegro.android.slinger'
+rootProject.name='pl.allegro.android.slinger'
 include ':slinger', ':sample'

@@ -1,5 +1,7 @@
-Slinger - deep linking library for Android
-======
+Slinger - deep linking library for Android 
+====================
+
+[![Build Status](https://travis-ci.org/allegro/slinger.svg)](https://travis-ci.org/allegro/slinger)
 
 Slinger is a small Android library for handling custom Uri which uses regular expression to
 catch and route URLs which won’t be handled by normal [intent-filter](http://developer.android.com/guide/topics/manifest/data-element.html#path) mechanism.
