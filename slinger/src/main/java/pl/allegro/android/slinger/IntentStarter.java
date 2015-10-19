@@ -17,6 +17,8 @@ import java.util.List;
 import static android.content.Intent.EXTRA_INITIAL_INTENTS;
 import static android.content.Intent.createChooser;
 import static android.content.pm.PackageManager.MATCH_DEFAULT_ONLY;
+import static android.widget.Toast.LENGTH_LONG;
+import static android.widget.Toast.makeText;
 
 /**
  * Starts Intent but without {@link Activity} that should be ignored.
@@ -82,6 +84,12 @@ public class IntentStarter {
     wasResolved = true;
     List<ResolveInfo> queryIntentActivities = packageManager.queryIntentActivities(intent, 0);
 
+    AppLinkBypasser appLinkBypasser = new AppLinkBypasser(packageManager);
+
+    if (appLinkBypasser.isBypassApplicable(queryIntentActivities)) {
+        queryIntentActivities.addAll(appLinkBypasser.resolveAdditionalActivitiesWithScheme(intent));
+    }
+
     for (ResolveInfo resolveInfo : queryIntentActivities) {
       PackageItemInfo resolvedActivityInfo = resolveInfo.activityInfo;
       if (!isActivityToBeIgnored(resolvedActivityInfo)) {
@@ -104,7 +112,6 @@ public class IntentStarter {
     targetIntents.clear();
     targetIntents.add(0, (new Intent(intent)).setPackage(resolvedActivityInfo.packageName));
   }
-
 
   private boolean isActivityToBeIgnored(PackageItemInfo resolvedActivityInfo) {
     for (String activityToIgnore : activitiesToIgnore) {
@@ -138,8 +145,10 @@ public class IntentStarter {
       runDefaultActivity(parentActivity, intent);
     } else if (targetIntents.size() == 1) {
       runFirstAndOnlyOneActivity(parentActivity, targetIntents.get(0));
-    } else {
+    } else if (targetIntents.size() > 0){
       showChooser(parentActivity);
+    } else {
+      makeText(parentActivity, R.string.no_activities_to_handle_this_link, LENGTH_LONG).show();
     }
   }
 
@@ -151,13 +160,13 @@ public class IntentStarter {
     context.startActivity(intent);
   }
 
-  private void showChooser(Context context) {
+  private void showChooser(Activity activity) {
     List<Intent> intentsList = getIntentList();
 
     Intent chooserIntent =
         createChooser(targetIntents.get(0), resolverTitle).putExtra(EXTRA_INITIAL_INTENTS,
             intentsList.toArray(new Parcelable[intentsList.size()]));
-    context.startActivity(chooserIntent);
+    activity.startActivity(chooserIntent);
   }
 
   private List<Intent> getIntentList() {
