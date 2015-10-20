@@ -34,7 +34,8 @@ import static org.mockito.Mockito.when;
     Intent intent = new Intent();
     PackageManager packageManager =
         preparePackageManager(intent, ImmutableList.<Class<? extends Activity>>of(Activity1.class));
-    IntentStarter objectUnderTest = new IntentStarter(packageManager, intent, Activity1.class,"");
+    IntentStarter objectUnderTest =
+        new IntentStarter(packageManager, intent, Activity1.class, "", null);
 
     // when
     objectUnderTest.resolveActivities();
@@ -50,7 +51,7 @@ import static org.mockito.Mockito.when;
         ImmutableList.of(Activity1.class, Activity2.class);
     PackageManager packageManager = preparePackageManager(intent, activitiesToResolveAndIgnore);
     IntentStarter objectUnderTest =
-        new IntentStarter(packageManager, intent, activitiesToResolveAndIgnore, "");
+        new IntentStarter(packageManager, intent, activitiesToResolveAndIgnore, "", null);
 
     // when
     objectUnderTest.resolveActivities();
@@ -83,7 +84,8 @@ import static org.mockito.Mockito.when;
     when(packageManager.resolveActivity(eq(intent), anyInt())).thenReturn(
         Utils.createResolveInfo(Activity3.class, true));
 
-    IntentStarter objectUnderTest = new IntentStarter(packageManager, intent, Activity1.class, "");
+    IntentStarter objectUnderTest =
+        new IntentStarter(packageManager, intent, Activity1.class, "", null);
     Activity parentActivity = getParentActivitySpy();
 
     // when
@@ -108,7 +110,8 @@ import static org.mockito.Mockito.when;
     when(packageManager.resolveActivity(eq(intent), anyInt())).thenReturn(
         Utils.createResolveInfo(Activity1.class, true));
 
-    IntentStarter objectUnderTest = new IntentStarter(packageManager, intent, Activity1.class, "");
+    IntentStarter objectUnderTest =
+        new IntentStarter(packageManager, intent, Activity1.class, "", null);
     Activity parentActivity = getParentActivitySpy();
 
     // when
@@ -130,7 +133,8 @@ import static org.mockito.Mockito.when;
     when(packageManager.resolveActivity(eq(intent), anyInt())).thenReturn(
         Utils.createResolveInfo(Activity1.class, true));
 
-    IntentStarter objectUnderTest = new IntentStarter(packageManager, intent, Activity1.class, "");
+    IntentStarter objectUnderTest =
+        new IntentStarter(packageManager, intent, Activity1.class, "", null);
     Activity parentActivity = getParentActivitySpy();
 
     // when
@@ -146,7 +150,8 @@ import static org.mockito.Mockito.when;
     Intent intent = new Intent();
     PackageManager packageManager =
         preparePackageManager(intent, ImmutableList.of(Activity1.class, Activity2.class));
-    IntentStarter objectUnderTest = new IntentStarter(packageManager, intent, Activity1.class, "");
+    IntentStarter objectUnderTest =
+        new IntentStarter(packageManager, intent, Activity1.class, "", null);
     Activity parentActivity = getParentActivitySpy();
 
     // when
@@ -162,7 +167,8 @@ import static org.mockito.Mockito.when;
     Intent intent = new Intent();
     PackageManager packageManager = preparePackageManager(intent,
         ImmutableList.of(Activity1.class, Activity2.class, Activity3.class));
-    IntentStarter objectUnderTest = new IntentStarter(packageManager, intent, Activity1.class, "");
+    IntentStarter objectUnderTest =
+        new IntentStarter(packageManager, intent, Activity1.class, "", null);
     Activity parentActivity = getParentActivitySpy();
 
     // when
