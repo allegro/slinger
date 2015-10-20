@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * Class bypassing App link mechanism introduced in Android Marshmallow.
- * If an application has link-handling setting enabled then {@link PackageManager} returns only ony
+ * If an application has link-handling setting enabled then {@link PackageManager} returns only one
  * result from {@link PackageManager#queryIntentActivities(Intent, int)}.
  * If we explicitly don't want to use this result then we query for {@link Intent}s only with
  * scheme defined.
@@ -31,7 +31,7 @@ class AppLinkBypasser {
   }
 
   private boolean hasMarshmallow() {
-    return Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1;
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
   }
 
   List<ResolveInfo> resolveAdditionalActivitiesWithScheme(Intent intent) {

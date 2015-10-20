@@ -145,7 +145,7 @@ public class IntentStarter {
       runDefaultActivity(parentActivity, intent);
     } else if (targetIntents.size() == 1) {
       runFirstAndOnlyOneActivity(parentActivity, targetIntents.get(0));
-    } else if (targetIntents.size() > 0){
+    } else if (!targetIntents.isEmpty()){
       showChooser(parentActivity);
     } else {
       makeText(parentActivity, R.string.no_activities_to_handle_this_link, LENGTH_LONG).show();
