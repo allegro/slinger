@@ -30,34 +30,45 @@ public class IntentStarter {
   private final Intent intent;
   private final List<Intent> targetIntents = new ArrayList<>();
   private final String resolverTitle;
+  private final AppLinkBypasser appLinkBypasser;
   private boolean wasResolved;
 
   public IntentStarter(@NonNull PackageManager packageManager, @NonNull Intent intent) {
-    this(packageManager, intent, Collections.<Class<? extends Activity>>emptyList(), "");
+    this(packageManager, intent, Collections.<Class<? extends Activity>>emptyList(), "", null);
   }
 
   public IntentStarter(@NonNull PackageManager packageManager, @NonNull Intent intent,
-      @Nullable Class<? extends Activity> activityToIgnore, @Nullable String title) {
-    this.intent = intent;
+      @Nullable Class<? extends Activity> activityToIgnore, @Nullable String title,
+      @Nullable AppLinkBypasser appLinkBypasser) {
     this.packageManager = packageManager;
+    this.intent = intent;
 
     this.activitiesToIgnore = activityToIgnore != null ? getActivitiesCanonicalNames(
         Collections.<Class<? extends Activity>>singletonList(activityToIgnore))
         : Collections.<String>emptyList();
     this.resolverTitle = title;
+    this.appLinkBypasser = createOrGetAppLinkBypasser(packageManager, appLinkBypasser);
   }
 
   public IntentStarter(@NonNull PackageManager packageManager, @NonNull Intent intent,
-      @Nullable List<Class<? extends Activity>> activitiesToIgnore, @Nullable String title) {
-    this.intent = intent;
+      @Nullable List<Class<? extends Activity>> activitiesToIgnore, @Nullable String title,
+      @Nullable AppLinkBypasser appLinkBypasser) {
     this.packageManager = packageManager;
+    this.intent = intent;
     this.activitiesToIgnore = getIgnoredActivitiesList(activitiesToIgnore);
     this.resolverTitle = title;
+    this.appLinkBypasser = createOrGetAppLinkBypasser(packageManager, appLinkBypasser);
+  }
+
+  @NonNull
+  private AppLinkBypasser createOrGetAppLinkBypasser(@NonNull PackageManager packageManager,
+      AppLinkBypasser appLinkBypasser) {
+    return appLinkBypasser != null ? appLinkBypasser : new AppLinkBypasser(packageManager);
   }
 
   public IntentStarter(@NonNull PackageManager packageManager, @NonNull Intent intent,
       @Nullable List<Class<? extends Activity>> activitiesToIgnore) {
-    this(packageManager, intent, activitiesToIgnore, null);
+    this(packageManager, intent, activitiesToIgnore, "", null);
   }
 
   private List<String> getIgnoredActivitiesList(
@@ -84,10 +95,8 @@ public class IntentStarter {
     wasResolved = true;
     List<ResolveInfo> queryIntentActivities = packageManager.queryIntentActivities(intent, 0);
 
-    AppLinkBypasser appLinkBypasser = new AppLinkBypasser(packageManager);
-
     if (appLinkBypasser.isBypassApplicable(queryIntentActivities)) {
-        queryIntentActivities.addAll(appLinkBypasser.resolveAdditionalActivitiesWithScheme(intent));
+      queryIntentActivities.addAll(appLinkBypasser.resolveAdditionalActivitiesWithScheme(intent));
     }
 
     for (ResolveInfo resolveInfo : queryIntentActivities) {
@@ -145,7 +154,7 @@ public class IntentStarter {
       runDefaultActivity(parentActivity, intent);
     } else if (targetIntents.size() == 1) {
       runFirstAndOnlyOneActivity(parentActivity, targetIntents.get(0));
-    } else if (!targetIntents.isEmpty()){
+    } else if (!targetIntents.isEmpty()) {
       showChooser(parentActivity);
     } else {
       makeText(parentActivity, R.string.no_activities_to_handle_this_link, LENGTH_LONG).show();
