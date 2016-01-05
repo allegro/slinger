@@ -1,6 +1,7 @@
 package pl.allegro.android.slinger;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -10,6 +11,7 @@ import android.content.pm.ResolveInfo;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -136,8 +138,18 @@ public class IntentStarter {
   }
 
   boolean hasDefaultHandler() {
-    ActivityInfo resolvedActivityInfo =
-        packageManager.resolveActivity(intent, MATCH_DEFAULT_ONLY).activityInfo;
+    ResolveInfo resolvedActivity = packageManager.resolveActivity(intent, MATCH_DEFAULT_ONLY);
+    if (resolvedActivity == null) {
+      if (intent.getComponent() != null) {
+        throw new ActivityNotFoundException(
+            "Unable to find explicit activity class "
+                + intent.getComponent().toShortString()
+                + "; have you declared this activity in your AndroidManifest.xml?");
+      }
+      throw new ActivityNotFoundException("No Activity found to handle " + intent);
+    }
+
+    ActivityInfo resolvedActivityInfo = resolvedActivity.activityInfo;
     return !RESOLVER_ACTIVITY.equals(resolvedActivityInfo.name) && !isActivityToBeIgnored(
         resolvedActivityInfo);
   }
@@ -151,7 +163,7 @@ public class IntentStarter {
       resolveActivities();
     }
     if (hasDefaultHandler()) {
-      runDefaultActivity(parentActivity, intent);
+      runDefaultActivity(parentActivity);
     } else if (targetIntents.size() == 1) {
       runFirstAndOnlyOneActivity(parentActivity, targetIntents.get(0));
     } else if (!targetIntents.isEmpty()) {
@@ -161,8 +173,8 @@ public class IntentStarter {
     }
   }
 
-  private void runDefaultActivity(Context context, Intent mIntent) {
-    context.startActivity(mIntent);
+  private void runDefaultActivity(Context context) {
+    context.startActivity(intent);
   }
 
   private void runFirstAndOnlyOneActivity(Context context, Intent intent) {
