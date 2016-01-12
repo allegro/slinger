@@ -161,8 +161,8 @@ public class IntentStarter {
     }
   }
 
-  private void runDefaultActivity(Context context, Intent mIntent) {
-    context.startActivity(mIntent);
+  private void runDefaultActivity(Context context, Intent intent) {
+    context.startActivity(intent);
   }
 
   private void runFirstAndOnlyOneActivity(Context context, Intent intent) {

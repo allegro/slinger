@@ -4,46 +4,49 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
+import java.util.Collections;
+
 import pl.allegro.android.slinger.enricher.DefaultIntentEnricher;
 import pl.allegro.android.slinger.enricher.IntentEnricher;
 import pl.allegro.android.slinger.resolver.IntentResolver;
 import pl.allegro.android.slinger.resolver.RedirectRule;
-import java.util.Collections;
 
-public abstract class SlingerActivity extends Activity {
+public class SlingerActivity extends Activity {
 
-  private IntentEnricher intentEnricher = new DefaultIntentEnricher();
+  private static IntentEnricher intentEnricher = new DefaultIntentEnricher();
 
-  @Override protected void onCreate(Bundle savedInstanceState) {
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    Uri uri = getOriginatingUriFromIntent(getIntent());
-
-    if (uri == null) {
-      finish();
-      return;
-    }
-
-    excludeSlingerAndStartTargetActivity(uri);
+    startActivity(getIntent());
     finish();
   }
 
-  private Uri getOriginatingUriFromIntent(Intent intent) {
+  public static void startActivity(Activity parentActivity, Intent intent) {
+    Uri uri = getOriginatingUriFromIntent(intent);
+    Intent resultIntent = (uri == null) ? intent : enrichIntent(parentActivity, uri);
+
+    excludeSlingerAndStartTargetActivity(parentActivity, resultIntent);
+  }
+
+  private static Uri getOriginatingUriFromIntent(Intent intent) {
     return intent != null ? intent.getData() : null;
   }
 
-  protected void excludeSlingerAndStartTargetActivity(Uri originatingUri) {
-    new IntentStarter(getPackageManager(), enrichIntent(originatingUri),
-        Collections.<Class<? extends Activity>>singletonList(this.getClass())).startActivity(this);
+  protected static void excludeSlingerAndStartTargetActivity(Activity parentActivity, Intent intent) {
+    new IntentStarter(parentActivity.getPackageManager(), intent,
+        Collections.<Class<? extends Activity>>singletonList(SlingerActivity.class)).startActivity(parentActivity);
   }
 
-  protected Intent enrichIntent(Uri originatingUri) {
-    return intentEnricher.enrichSlingedIntent(this, originatingUri,
-        resolveIntentToBeSlinged(originatingUri));
+  protected static Intent enrichIntent(Activity parentActivity, Uri originatingUri) {
+    return intentEnricher.enrichSlingedIntent(parentActivity, originatingUri,
+        resolveIntentToBeSlinged(parentActivity, originatingUri));
   }
 
-  private Intent resolveIntentToBeSlinged(Uri originatingUri) {
-    return getIntentResolver().resolveIntentToSling(originatingUri);
+  private static Intent resolveIntentToBeSlinged(Activity parentActivity, Uri originatingUri) {
+    return getIntentResolver(parentActivity).resolveIntentToSling(originatingUri);
   }
 
   /**
@@ -51,5 +54,7 @@ public abstract class SlingerActivity extends Activity {
    * RedirectRule}s
    * and default {@link Intent} when no {@link RedirectRule} is matched
    */
-  protected abstract IntentResolver getIntentResolver();
+  private static IntentResolver getIntentResolver(Activity parentActivity) {
+    return new ManifestParser(parentActivity).parse();
+  }
 }

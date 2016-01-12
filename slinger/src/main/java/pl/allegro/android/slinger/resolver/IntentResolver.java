@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import java.util.Collection;
 
 import static android.content.Intent.ACTION_VIEW;
 
@@ -12,12 +11,9 @@ import static android.content.Intent.ACTION_VIEW;
  * Class that resolves target {@link Intent} by matching {@link Uri} that started {@link Activity}
  * with pattern provided by {@link RedirectRule}
  */
-public class IntentResolver {
+public abstract class IntentResolver {
 
-  Iterable<RedirectRule> rules;
-
-  public IntentResolver(Collection<RedirectRule> redirectRules) {
-    rules = redirectRules;
+  public IntentResolver(Activity activity){
   }
 
   /**
@@ -46,9 +42,7 @@ public class IntentResolver {
   /**
    * @return {@link Iterable} with {@link RedirectRule}s
    */
-  @NonNull private Iterable<RedirectRule> getRules() {
-    return rules;
-  }
+  @NonNull public abstract Iterable<RedirectRule> getRules();
 
   /**
    * @param originatingUri that started {@link Activity}
