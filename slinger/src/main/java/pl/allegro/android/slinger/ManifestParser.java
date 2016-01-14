@@ -14,7 +14,7 @@ import pl.allegro.android.slinger.resolver.IntentResolver;
  * Parses {@link IntentResolver} references out of the AndroidManifest file.
  */
 public final class ManifestParser {
-  private static final String INTENT_RESOLVER_VALUE = "IntentResolver";
+  private static final String INTENT_RESOLVER_NAME = "IntentResolver";
 
   private final Activity activity;
 
@@ -28,8 +28,8 @@ public final class ManifestParser {
           .getApplicationInfo(activity.getPackageName(), PackageManager.GET_META_DATA);
       if (appInfo.metaData != null) {
         for (String key : appInfo.metaData.keySet()) {
-          if (INTENT_RESOLVER_VALUE.equals(appInfo.metaData.get(key))) {
-           return parseResolver(key);
+          if (INTENT_RESOLVER_NAME.equals(key)) {
+            return parseResolver(appInfo.metaData.getString(key));
           }
         }
       }
@@ -37,7 +37,7 @@ public final class ManifestParser {
       throw new RuntimeException("Unable to find metadata to parse IntentResolver", e);
     }
 
-    return null;
+    throw new RuntimeException("Unable to find metadata to parse IntentResolver");
   }
 
   private IntentResolver parseResolver(String className) {
@@ -50,7 +50,7 @@ public final class ManifestParser {
 
     Object module;
     try {
-      Constructor<?> cons = clazz.getConstructor(SlingerActivity.class);
+      Constructor<?> cons = clazz.getConstructor(Activity.class);
       module = cons.newInstance(activity);
     } catch (InstantiationException e) {
       throw new RuntimeException("Unable to instantiate IntentResolver implementation for " + clazz,
@@ -62,7 +62,7 @@ public final class ManifestParser {
       throw new RuntimeException("No constructor for " + clazz + "that has Activity as parameter",
           e);
     } catch (InvocationTargetException e) {
-      throw new RuntimeException("Unable to instantiate IntentResolver implementation for "+ clazz,
+      throw new RuntimeException("Unable to instantiate IntentResolver implementation for " + clazz,
           e);
     }
 

@@ -20,7 +20,7 @@ public class SlingerActivity extends Activity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    startActivity(getIntent());
+    startActivity(this, getIntent());
     finish();
   }
 
