@@ -6,18 +6,21 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.support.annotation.NonNull;
-import pl.allegro.android.slinger.util.IntentMatchers.IsIntentWithAction;
-import pl.allegro.android.slinger.util.IntentMatchers.IsIntentWithPackageName;
+
 import com.google.common.collect.ImmutableList;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.res.builder.RobolectricPackageManager;
 
-import static pl.allegro.android.slinger.IntentStarterTest.Utils.preparePackageManager;
+import java.util.ArrayList;
+import java.util.List;
+
+import pl.allegro.android.slinger.util.IntentMatchers.IsIntentWithAction;
+import pl.allegro.android.slinger.util.IntentMatchers.IsIntentWithPackageName;
+
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.argThat;
@@ -26,6 +29,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static pl.allegro.android.slinger.IntentStarterTest.Utils.preparePackageManager;
 
 @RunWith(RobolectricGradleTestRunner.class) public class IntentStarterTest {
 

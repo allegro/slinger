@@ -3,6 +3,7 @@ package pl.allegro.android.slinger.resolver;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 
 import static android.content.Intent.ACTION_VIEW;
@@ -11,6 +12,7 @@ import static android.content.Intent.ACTION_VIEW;
  * Class that resolves target {@link Intent} by matching {@link Uri} that started {@link Activity}
  * with pattern provided by {@link RedirectRule}
  */
+@Keep
 public abstract class IntentResolver {
 
   public IntentResolver(Activity activity){

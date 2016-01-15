@@ -16,19 +16,22 @@ public class SlingerActivity extends Activity {
 
   private static IntentEnricher intentEnricher = new DefaultIntentEnricher();
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     startActivity(this, getIntent());
-    finish();
   }
 
   public static void startActivity(Activity parentActivity, Intent intent) {
     Uri uri = getOriginatingUriFromIntent(intent);
-    Intent resultIntent = (uri == null) ? intent : enrichIntent(parentActivity, uri);
 
-    excludeSlingerAndStartTargetActivity(parentActivity, resultIntent);
+    if(uri == null){
+      throw new RuntimeException("You cannot run this Activity without specifying Uri!");
+    }
+
+    excludeSlingerAndStartTargetActivity(parentActivity, intentEnricher.enrichSlingedIntent(parentActivity, uri,
+        resolveIntentToBeSlinged(parentActivity, uri)));
+    parentActivity.finish();
   }
 
   private static Uri getOriginatingUriFromIntent(Intent intent) {
@@ -38,11 +41,6 @@ public class SlingerActivity extends Activity {
   protected static void excludeSlingerAndStartTargetActivity(Activity parentActivity, Intent intent) {
     new IntentStarter(parentActivity.getPackageManager(), intent,
         Collections.<Class<? extends Activity>>singletonList(SlingerActivity.class)).startActivity(parentActivity);
-  }
-
-  protected static Intent enrichIntent(Activity parentActivity, Uri originatingUri) {
-    return intentEnricher.enrichSlingedIntent(parentActivity, originatingUri,
-        resolveIntentToBeSlinged(parentActivity, originatingUri));
   }
 
   private static Intent resolveIntentToBeSlinged(Activity parentActivity, Uri originatingUri) {

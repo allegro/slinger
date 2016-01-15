@@ -14,7 +14,7 @@ import pl.allegro.android.slinger.resolver.IntentResolver;
  * Parses {@link IntentResolver} references out of the AndroidManifest file.
  */
 public final class ManifestParser {
-  private static final String INTENT_RESOLVER_NAME = "IntentResolver";
+  static final String INTENT_RESOLVER_NAME = "IntentResolver";
 
   private final Activity activity;
 
