@@ -1,9 +1,13 @@
 package pl.allegro.android.slinger.resolver;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 
 import static android.content.Intent.ACTION_VIEW;
@@ -29,7 +33,17 @@ import static org.robolectric.RuntimeEnvironment.application;
           .pattern(PATTERN_FOR_B)
           .build();
 
-  private IntentResolver objectUnderTest = new IntentResolver(asList(RULE_A, RULE_B));
+  private IntentResolver objectUnderTest = new IntentResolver(getActivity()) {
+    @NonNull
+    @Override
+    public Iterable<RedirectRule> getRules() {
+      return asList(RULE_A, RULE_B);
+    }
+  };
+
+  private ActivityA getActivity() {
+    return Robolectric.buildActivity(ActivityA.class).create().get();
+  }
 
   @Test public void shouldReturnDefaultIntent() {
 
@@ -64,9 +78,9 @@ import static org.robolectric.RuntimeEnvironment.application;
     return application.getApplicationContext();
   }
 
-  private static class ActivityA {
+  static class ActivityA extends Activity{
   }
 
-  private static class ActivityB {
+  static class ActivityB extends Activity{
   }
 }

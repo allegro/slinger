@@ -3,7 +3,6 @@ package pl.allegro.android.slinger.enricher;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
-import android.net.ParseException;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -45,11 +44,7 @@ public final class ReferrerMangler {
 
     String referrer = intent.getStringExtra(EXTRA_REFERRER_NAME);
     if (referrer != null) {
-      try {
-        return Uri.parse(referrer);
-      } catch (ParseException e) {
-        throw new RuntimeException(e);
-      }
+      return Uri.parse(referrer);
     }
 
     return null;
