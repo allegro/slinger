@@ -20,6 +20,7 @@ public class SlingerActivity extends Activity {
     super.onCreate(savedInstanceState);
 
     startActivity(this, getIntent());
+    finish();
   }
 
   public static void startActivity(Activity parentActivity, Intent intent) {
@@ -31,7 +32,6 @@ public class SlingerActivity extends Activity {
 
     excludeSlingerAndStartTargetActivity(parentActivity, intentEnricher.enrichSlingedIntent(parentActivity, uri,
         resolveIntentToBeSlinged(parentActivity, uri)));
-    parentActivity.finish();
   }
 
   private static Uri getOriginatingUriFromIntent(Intent intent) {

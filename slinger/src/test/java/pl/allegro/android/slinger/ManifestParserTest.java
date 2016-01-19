@@ -21,13 +21,13 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 public class ManifestParserTest {
-  private PackageManagerInstrumentator instrumentator = new PackageManagerInstrumentator();
+  private PackageManagerPreparator instrumentator;
   private ManifestParser parser;
   private Activity activity = spy(Robolectric.setupActivity(Activity.class));
 
   @Before
   public void setUp() throws PackageManager.NameNotFoundException {
-    instrumentator.preparePackageManagerInActivity(activity);
+    instrumentator = new PackageManagerPreparator(activity.getPackageName());
     parser = new ManifestParser(activity);
   }
 

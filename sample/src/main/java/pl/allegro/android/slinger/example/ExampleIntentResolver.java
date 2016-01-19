@@ -2,6 +2,7 @@ package pl.allegro.android.slinger.example;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import pl.allegro.android.slinger.resolver.RedirectRule;
 import static java.util.Arrays.asList;
 import static pl.allegro.android.slinger.resolver.RedirectRule.builder;
 
+@Keep
 public class ExampleIntentResolver extends IntentResolver {
   public static final String PATTERN_FOR_ABOUT_ACTIVITY = "http(s)?://example.com/abc\\.html\\?query=a.*";
   public static final String PATTERN_FOR_CONTACT_ACTIVITY = "http(s)?://example.com/abc\\.html\\?query=c.*";
