@@ -12,11 +12,9 @@ import static com.google.common.truth.Truth.assertThat;
 import static pl.allegro.android.slinger.enricher.ReferrerMangler.addReferrerToIntent;
 import static pl.allegro.android.slinger.enricher.ReferrerMangler.getReferrerUriFromIntent;
 
-@RunWith(RobolectricGradleTestRunner.class)
-public class ReferrerManglerTest {
+@RunWith(RobolectricGradleTestRunner.class) public class ReferrerManglerTest {
 
-  @Test
-  public void shouldPutAndRetrieveReferrerFromIntent() {
+  @Test public void shouldPutAndRetrieveReferrerFromIntent() {
     //given
     Intent intent = new Intent();
     Uri referrer =
@@ -30,8 +28,7 @@ public class ReferrerManglerTest {
     assertThat(referrerUriFromIntent).isEqualTo(referrer);
   }
 
-  @Test
-  public void shouldReturnNullForNotSetReferrer() {
+  @Test public void shouldReturnNullForNotSetReferrer() {
     //given
     Intent intent = new Intent();
     addReferrerToIntent(intent, null);

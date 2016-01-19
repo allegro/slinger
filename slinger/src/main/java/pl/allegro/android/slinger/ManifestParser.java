@@ -1,6 +1,5 @@
 package pl.allegro.android.slinger;
 
-
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.pm.ActivityInfo;
@@ -25,8 +24,8 @@ public final class ManifestParser {
 
   public IntentResolver parse() {
     try {
-      ActivityInfo activityInfo = activity.getPackageManager().getActivityInfo(
-          new ComponentName(activity.getPackageName(),
+      ActivityInfo activityInfo = activity.getPackageManager()
+          .getActivityInfo(new ComponentName(activity.getPackageName(),
               "pl.allegro.android.slinger.SlingerActivity"), PackageManager.GET_META_DATA);
 
       if (activityInfo.metaData != null) {

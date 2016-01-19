@@ -197,7 +197,7 @@ import static pl.allegro.android.slinger.IntentStarterTest.Utils.preparePackageM
 
   static class Utils {
 
-    private static ActivityInfo createActvitiyInfo(Class<? extends Activity> clazz) {
+    private static ActivityInfo createActivityInfo(Class<? extends Activity> clazz) {
       ActivityInfo activityInfo = new ActivityInfo();
       activityInfo.name = clazz.getCanonicalName();
       activityInfo.packageName = clazz.getPackage().getName();
@@ -210,7 +210,7 @@ import static pl.allegro.android.slinger.IntentStarterTest.Utils.preparePackageM
 
     static ResolveInfo createResolveInfo(Class<? extends Activity> clazz, boolean isDefault) {
       ResolveInfo resolveInfo = new ResolveInfo();
-      resolveInfo.activityInfo = createActvitiyInfo(clazz);
+      resolveInfo.activityInfo = createActivityInfo(clazz);
       resolveInfo.isDefault = isDefault;
       return resolveInfo;
     }

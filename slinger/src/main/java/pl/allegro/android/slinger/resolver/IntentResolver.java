@@ -12,17 +12,17 @@ import static android.content.Intent.ACTION_VIEW;
  * Class that resolves target {@link Intent} by matching {@link Uri} that started {@link Activity}
  * with pattern provided by {@link RedirectRule}
  */
-@Keep
-public abstract class IntentResolver {
+@Keep public abstract class IntentResolver {
 
-  public IntentResolver(Activity activity){
+  @SuppressWarnings("unused")
+  public IntentResolver(Activity activity) {
   }
 
   /**
    * Resolves {@link Intent} that will be slinged
    *
    * @param originatingUri {@link Uri} retrieved from {@link Intent#getData()}
-   * @return {@link Intent} from matchibng {@link RedirectRule}
+   * @return {@link Intent} from matching {@link RedirectRule}
    */
   @NonNull public Intent resolveIntentToSling(@NonNull Uri originatingUri) {
     Intent intentToSling = getDefaultRedirectIntent(originatingUri);

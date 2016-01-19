@@ -141,10 +141,9 @@ public class IntentStarter {
     ResolveInfo resolvedActivity = packageManager.resolveActivity(intent, MATCH_DEFAULT_ONLY);
     if (resolvedActivity == null) {
       if (intent.getComponent() != null) {
-        throw new ActivityNotFoundException(
-            "Unable to find explicit activity class "
-                + intent.getComponent().toShortString()
-                + "; have you declared this activity in your AndroidManifest.xml?");
+        throw new ActivityNotFoundException("Unable to find explicit activity class "
+            + intent.getComponent().toShortString()
+            + "; have you declared this activity in your AndroidManifest.xml?");
       }
       throw new ActivityNotFoundException("No Activity found to handle " + intent);
     }

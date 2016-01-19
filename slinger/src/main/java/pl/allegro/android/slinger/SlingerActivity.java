@@ -26,21 +26,24 @@ public class SlingerActivity extends Activity {
   public static void startActivity(Activity parentActivity, Intent intent) {
     Uri uri = getOriginatingUriFromIntent(intent);
 
-    if(uri == null){
+    if (uri == null) {
       throw new RuntimeException("You cannot run this Activity without specifying Uri!");
     }
 
-    excludeSlingerAndStartTargetActivity(parentActivity, intentEnricher.enrichSlingedIntent(parentActivity, uri,
-        resolveIntentToBeSlinged(parentActivity, uri)));
+    excludeSlingerAndStartTargetActivity(parentActivity,
+        intentEnricher.enrichSlingedIntent(parentActivity, uri,
+            resolveIntentToBeSlinged(parentActivity, uri)));
   }
 
   private static Uri getOriginatingUriFromIntent(Intent intent) {
     return intent != null ? intent.getData() : null;
   }
 
-  protected static void excludeSlingerAndStartTargetActivity(Activity parentActivity, Intent intent) {
+  protected static void excludeSlingerAndStartTargetActivity(Activity parentActivity,
+      Intent intent) {
     new IntentStarter(parentActivity.getPackageManager(), intent,
-        Collections.<Class<? extends Activity>>singletonList(SlingerActivity.class)).startActivity(parentActivity);
+        Collections.<Class<? extends Activity>>singletonList(SlingerActivity.class)).startActivity(
+        parentActivity);
   }
 
   private static Intent resolveIntentToBeSlinged(Activity parentActivity, Uri originatingUri) {

@@ -40,7 +40,6 @@ import static com.google.common.truth.Truth.assertThat;
     assertThat(rawSchemeIntent.getCategories()).isEqualTo(intent.getCategories());
   }
 
-
   private void assertThatUriContainsOnlyScheme(Uri rawSchemeUri, String scheme) {
     assertThat(rawSchemeUri.getScheme()).isEqualTo(scheme);
     assertThat(rawSchemeUri.getAuthority()).isNull();

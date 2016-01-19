@@ -24,11 +24,9 @@ import static org.mockito.Mockito.verify;
 import static pl.allegro.android.slinger.IntentStarterTest.Utils.preparePackageManager;
 import static pl.allegro.android.slinger.resolver.RedirectRule.builder;
 
-@RunWith(RobolectricGradleTestRunner.class)
-public class SlingerActivityTest {
+@RunWith(RobolectricGradleTestRunner.class) public class SlingerActivityTest {
 
-  @Test(expected = RuntimeException.class)
-  public void shouldFailWithoutSpecifyingUri() {
+  @Test(expected = RuntimeException.class) public void shouldFailWithoutSpecifyingUri() {
     // given
     Intent intent = new Intent(Intent.ACTION_VIEW);
 
@@ -36,8 +34,7 @@ public class SlingerActivityTest {
     Robolectric.buildActivity(SlingerActivity.class).withIntent(intent).create().get();
   }
 
-  @Test(expected = RuntimeException.class)
-  public void shouldFailForNullIntent() {
+  @Test(expected = RuntimeException.class) public void shouldFailForNullIntent() {
     Robolectric.buildActivity(SlingerActivity.class).withIntent(null).create().get();
   }
 
@@ -47,10 +44,12 @@ public class SlingerActivityTest {
     Activity activity = spy(Robolectric.setupActivity(Activity.class));
     activity.setIntent(intent);
 
-    preparePackageManager(new Intent(intent).setClass(activity, Activity1.class),ImmutableList.<Class<? extends Activity>>of(Activity1.class));
-    preparePackageManager(new Intent(intent).setClass(activity, SlingerActivity.class), ImmutableList.<Class<? extends Activity>>of(SlingerActivity.class));
-    new PackageManagerPreparator().getActivityInfo()
-        .metaData.putString(ManifestParser.INTENT_RESOLVER_NAME, TestModule1.class.getName());
+    preparePackageManager(new Intent(intent).setClass(activity, Activity1.class),
+        ImmutableList.<Class<? extends Activity>>of(Activity1.class));
+    preparePackageManager(new Intent(intent).setClass(activity, SlingerActivity.class),
+        ImmutableList.<Class<? extends Activity>>of(SlingerActivity.class));
+    new PackageManagerPreparator().getActivityInfo().metaData.putString(
+        ManifestParser.INTENT_RESOLVER_NAME, TestModule1.class.getName());
 
     // when
     SlingerActivity.startActivity(activity, intent);
@@ -60,7 +59,6 @@ public class SlingerActivityTest {
   }
 
   static class Activity1 extends Activity {
-
   }
 
   public static class TestModule1 extends IntentResolver {
@@ -75,13 +73,12 @@ public class SlingerActivityTest {
     }
 
     RedirectRule getRedirectRuleForExampleHost(Activity activity) {
-      return builder().intent(new Intent(activity, Activity1.class).setAction(Intent.ACTION_VIEW)).pattern(
-          PATTERN_FOR_EXAMPLE_HOST).build();
+      return builder().intent(new Intent(activity, Activity1.class).setAction(Intent.ACTION_VIEW))
+          .pattern(PATTERN_FOR_EXAMPLE_HOST)
+          .build();
     }
 
-    @NonNull
-    @Override
-    public Iterable<RedirectRule> getRules() {
+    @NonNull @Override public Iterable<RedirectRule> getRules() {
       return rules;
     }
   }

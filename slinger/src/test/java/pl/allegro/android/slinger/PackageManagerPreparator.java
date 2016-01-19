@@ -22,7 +22,8 @@ public class PackageManagerPreparator {
         spy((RobolectricPackageManager) RuntimeEnvironment.application.getPackageManager());
 
     RuntimeEnvironment.setRobolectricPackageManager(packageManager);
-    doReturn(activityInfo).when(packageManager).getActivityInfo(any(ComponentName.class), eq(GET_META_DATA));
+    doReturn(activityInfo).when(packageManager)
+        .getActivityInfo(any(ComponentName.class), eq(GET_META_DATA));
     activityInfo.metaData = new Bundle();
   }
 

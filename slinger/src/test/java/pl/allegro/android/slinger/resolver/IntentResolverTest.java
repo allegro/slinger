@@ -34,9 +34,7 @@ import static org.robolectric.RuntimeEnvironment.application;
           .build();
 
   private IntentResolver objectUnderTest = new IntentResolver(getActivity()) {
-    @NonNull
-    @Override
-    public Iterable<RedirectRule> getRules() {
+    @NonNull @Override public Iterable<RedirectRule> getRules() {
       return asList(RULE_A, RULE_B);
     }
   };
