@@ -36,6 +36,15 @@ public class SlingerActivityTest {
     Robolectric.buildActivity(SlingerActivity.class).withIntent(intent).create().get();
   }
 
+  @Test(expected = RuntimeException.class)
+  public void shouldFailForNullIntent() {
+    // given
+    Intent intent = null;
+
+    // when
+    Robolectric.buildActivity(SlingerActivity.class).withIntent(intent).create().get();
+  }
+
   @Test public void shouldStartActivityWithUri() throws PackageManager.NameNotFoundException {
     // given
     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://example.com"));

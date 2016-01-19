@@ -42,7 +42,7 @@ ext {
   minSdkVersion = 9
   targetSdkVersion = 23
 
-  supportAnnotations = 'com.android.support:support-annotations:23.0.0'
+  supportAnnotations = 'com.android.support:support-annotations:23.1.1'
 
   junit = 'junit:junit:4.12'
   robolectric = 'org.robolectric:robolectric:3.0'
