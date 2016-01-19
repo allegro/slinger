@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 
@@ -20,6 +21,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
+@Config(manifest = Config.NONE)
 public class ManifestParserTest {
   private PackageManagerPreparator instrumentator;
   private ManifestParser parser;
@@ -27,7 +29,7 @@ public class ManifestParserTest {
 
   @Before
   public void setUp() throws PackageManager.NameNotFoundException {
-    instrumentator = new PackageManagerPreparator(activity.getPackageName());
+    instrumentator = new PackageManagerPreparator();
     parser = new ManifestParser(activity);
   }
 
@@ -46,7 +48,7 @@ public class ManifestParserTest {
 
   @Test(expected = RuntimeException.class)
   public void shouldFailIfAddedWithWrongKey() {
-    instrumentator.getApplicationInfo().metaData.putString(ManifestParser.INTENT_RESOLVER_NAME + "test", TestModule1.class.getName());
+    instrumentator.getActivityInfo().metaData.putString(ManifestParser.INTENT_RESOLVER_NAME + "test", TestModule1.class.getName());
     parser.parse();
   }
 

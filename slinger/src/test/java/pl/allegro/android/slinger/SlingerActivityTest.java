@@ -38,11 +38,7 @@ public class SlingerActivityTest {
 
   @Test(expected = RuntimeException.class)
   public void shouldFailForNullIntent() {
-    // given
-    Intent intent = null;
-
-    // when
-    Robolectric.buildActivity(SlingerActivity.class).withIntent(intent).create().get();
+    Robolectric.buildActivity(SlingerActivity.class).withIntent(null).create().get();
   }
 
   @Test public void shouldStartActivityWithUri() throws PackageManager.NameNotFoundException {
@@ -53,7 +49,7 @@ public class SlingerActivityTest {
 
     preparePackageManager(new Intent(intent).setClass(activity, Activity1.class),ImmutableList.<Class<? extends Activity>>of(Activity1.class));
     preparePackageManager(new Intent(intent).setClass(activity, SlingerActivity.class), ImmutableList.<Class<? extends Activity>>of(SlingerActivity.class));
-    new PackageManagerPreparator(activity.getPackageName()).getApplicationInfo()
+    new PackageManagerPreparator().getActivityInfo()
         .metaData.putString(ManifestParser.INTENT_RESOLVER_NAME, TestModule1.class.getName());
 
     // when
