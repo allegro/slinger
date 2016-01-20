@@ -26,7 +26,7 @@ public final class ManifestParser {
     try {
       ActivityInfo activityInfo = activity.getPackageManager()
           .getActivityInfo(new ComponentName(activity.getPackageName(),
-              "pl.allegro.android.slinger.SlingerActivity"), PackageManager.GET_META_DATA);
+              SlingerActivity.class.getCanonicalName()), PackageManager.GET_META_DATA);
 
       if (activityInfo.metaData != null) {
         for (String key : activityInfo.metaData.keySet()) {
