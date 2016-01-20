@@ -27,7 +27,7 @@
             android:name="pl.allegro.android.slinger.SlingerActivity"
             android:excludeFromRecents="true"
             android:noHistory="true"
-            android:theme="@style/Slinger.NoUi">
+            android:theme="@style/android:Theme.NoDisplay">
             <meta-data
                 android:name="IntentResolver"
                 android:value="pl.allegro.android.slinger.example.ExampleIntentResolver"/>
