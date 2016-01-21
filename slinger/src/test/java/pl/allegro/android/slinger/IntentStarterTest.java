@@ -173,18 +173,38 @@ import static pl.allegro.android.slinger.IntentStarterTest.Utils.preparePackageM
   public void whenThereIsNoActivityAbleToHandleIntent() {
     // given
 
-    Intent intent1 = new Intent().setComponent(
+    Intent intentToBeResolved = new Intent().setComponent(
         new ComponentName(RuntimeEnvironment.application.getPackageName(),
             Activity1.class.getName()));
 
-    Intent intent2 = new Intent().setComponent(
+    Intent intentToStart = new Intent().setComponent(
         new ComponentName(RuntimeEnvironment.application.getPackageName(),
             Activity2.class.getName()));
 
-    PackageManager packageManager =
-        preparePackageManager(intent1, ImmutableList.<Class<? extends Activity>>of(Activity1.class));
+    PackageManager packageManager = preparePackageManager(intentToBeResolved,
+        ImmutableList.<Class<? extends Activity>>of(Activity1.class));
     IntentStarter objectUnderTest =
-        new IntentStarter(packageManager, intent2, Activity1.class, "", null);
+        new IntentStarter(packageManager, intentToStart, Activity1.class, "", null);
+    Activity parentActivity = getParentActivitySpy();
+
+    // when
+    objectUnderTest.startActivity(parentActivity);
+  }
+
+  @Test(expected = ActivityNotFoundException.class)
+  public void whenThereIsNoActivityAbleToHandleIntentAndNoComponentInIntent() {
+    // given
+
+    Intent intentToBeResolved = new Intent().setComponent(
+        new ComponentName(RuntimeEnvironment.application.getPackageName(),
+            Activity1.class.getName()));
+
+    Intent intentToStart = new Intent().setPackage(RuntimeEnvironment.application.getPackageName());
+
+    PackageManager packageManager = preparePackageManager(intentToBeResolved,
+        ImmutableList.<Class<? extends Activity>>of(Activity1.class));
+    IntentStarter objectUnderTest =
+        new IntentStarter(packageManager, intentToStart, Activity1.class, "", null);
     Activity parentActivity = getParentActivitySpy();
 
     // when
