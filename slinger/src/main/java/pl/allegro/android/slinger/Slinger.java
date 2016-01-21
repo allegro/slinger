@@ -26,9 +26,8 @@ public class Slinger {
 
     IntentResolver intentResolver = getIntentResolver(parentActivity);
 
-    excludeSlingerAndStartTargetActivity(parentActivity,
-        intentResolver.getIntentEnricher().enrichSlingedIntent(parentActivity, uri,
-            resolveIntentToBeSlinged(intentResolver, uri)));
+    excludeSlingerAndStartTargetActivity(parentActivity, intentResolver.getIntentEnricher()
+        .enrichSlingedIntent(parentActivity, uri, resolveIntentToBeSlinged(intentResolver, uri)));
   }
 
   private static Uri getOriginatingUriFromIntent(Intent intent) {
@@ -41,7 +40,8 @@ public class Slinger {
         parentActivity);
   }
 
-  private static Intent resolveIntentToBeSlinged(IntentResolver intentResolver, Uri originatingUri) {
+  private static Intent resolveIntentToBeSlinged(IntentResolver intentResolver,
+      Uri originatingUri) {
     return intentResolver.resolveIntentToSling(originatingUri);
   }
 

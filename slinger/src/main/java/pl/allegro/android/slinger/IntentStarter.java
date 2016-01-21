@@ -2,6 +2,7 @@ package pl.allegro.android.slinger;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -140,9 +141,10 @@ public class IntentStarter {
   boolean hasDefaultHandler() {
     ResolveInfo resolvedActivity = packageManager.resolveActivity(intent, MATCH_DEFAULT_ONLY);
     if (resolvedActivity == null) {
-      if (intent.getComponent() != null) {
+      ComponentName component = intent.getComponent();
+      if (component != null) {
         throw new ActivityNotFoundException("Unable to find explicit activity class "
-            + intent.getComponent().toShortString()
+            + component.toShortString()
             + "; have you declared this activity in your AndroidManifest.xml?");
       }
       throw new ActivityNotFoundException("No Activity found to handle " + intent);

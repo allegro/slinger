@@ -1,6 +1,8 @@
 package pl.allegro.android.slinger;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -80,7 +82,8 @@ import static pl.allegro.android.slinger.IntentStarterTest.Utils.preparePackageM
     assertThat(targetIntents.get(0).getPackage()).isEqualTo(Activity1.class.getPackage().getName());
   }
 
-  @Test public void whenThereIsDefaultHandlerThenActivityWillBeStartedWithOriginalIntent() {
+  @SuppressWarnings("WrongConstant") @Test
+  public void whenThereIsDefaultHandlerThenActivityWillBeStartedWithOriginalIntent() {
     // given
     Intent intent = new Intent();
 
@@ -103,7 +106,7 @@ import static pl.allegro.android.slinger.IntentStarterTest.Utils.preparePackageM
     return spy(Activity1.class);
   }
 
-  @Test
+  @SuppressWarnings("WrongConstant") @Test
   public void whenIgnoredActivityIsDefaultHandlerAndThereIsOnlyOneMoreActivityAbleToHandleTheIntentThenTheOtherOneIsStarted() {
     // given
     Intent intent = new Intent();
@@ -126,7 +129,7 @@ import static pl.allegro.android.slinger.IntentStarterTest.Utils.preparePackageM
         argThat(new IsIntentWithPackageName("pl.allegro.android.slinger")));
   }
 
-  @Test
+  @SuppressWarnings("WrongConstant") @Test
   public void whenIgnoredActivityIsDefaultHandlerAndThereAreMoreActivitiesAbleToHandleTheIntentThenChooserIsPresented() {
     // given
     Intent intent = new Intent();
@@ -164,6 +167,28 @@ import static pl.allegro.android.slinger.IntentStarterTest.Utils.preparePackageM
     // then
     verify(parentActivity).startActivity(
         argThat(new IsIntentWithPackageName("pl.allegro.android.slinger")));
+  }
+
+  @Test(expected = ActivityNotFoundException.class)
+  public void whenThereIsNoActivityAbleToHandleIntent() {
+    // given
+
+    Intent intent1 = new Intent().setComponent(
+        new ComponentName(RuntimeEnvironment.application.getPackageName(),
+            Activity1.class.getName()));
+
+    Intent intent2 = new Intent().setComponent(
+        new ComponentName(RuntimeEnvironment.application.getPackageName(),
+            Activity2.class.getName()));
+
+    PackageManager packageManager =
+        preparePackageManager(intent1, ImmutableList.<Class<? extends Activity>>of(Activity1.class));
+    IntentStarter objectUnderTest =
+        new IntentStarter(packageManager, intent2, Activity1.class, "", null);
+    Activity parentActivity = getParentActivitySpy();
+
+    // when
+    objectUnderTest.startActivity(parentActivity);
   }
 
   @Test public void whenThereAreMultipleActivitiesAbleToHandleIntentThenChooserWillBePresented() {
