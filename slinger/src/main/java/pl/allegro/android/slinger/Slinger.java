@@ -21,6 +21,11 @@ public class Slinger {
    * @param intent contains uri that is used to find a new {@link Intent}
    */
   public static void startActivity(Activity parentActivity, Intent intent) {
+    startActivity(parentActivity, intent, intentEnricher);
+  }
+
+  public static void startActivity(Activity parentActivity, Intent intent,
+      IntentEnricher intentEnricher) {
     Uri uri = getOriginatingUriFromIntent(intent);
 
     if (uri == null) {
