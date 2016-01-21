@@ -4,14 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import java.util.Collections;
-import pl.allegro.android.slinger.enricher.DefaultIntentEnricher;
-import pl.allegro.android.slinger.enricher.IntentEnricher;
 import pl.allegro.android.slinger.resolver.IntentResolver;
 import pl.allegro.android.slinger.resolver.RedirectRule;
 
 public class Slinger {
-
-  private static IntentEnricher intentEnricher = new DefaultIntentEnricher();
 
   /**
    * Starts new {@link Intent} resolved by {@link IntentResolver}
@@ -21,11 +17,6 @@ public class Slinger {
    * @param intent contains uri that is used to find a new {@link Intent}
    */
   public static void startActivity(Activity parentActivity, Intent intent) {
-    startActivity(parentActivity, intent, intentEnricher);
-  }
-
-  public static void startActivity(Activity parentActivity, Intent intent,
-      IntentEnricher intentEnricher) {
     Uri uri = getOriginatingUriFromIntent(intent);
 
     if (uri == null) {
@@ -33,9 +24,11 @@ public class Slinger {
           "You cannot run this Activity without specifying Uri inside Intent!");
     }
 
+    IntentResolver intentResolver = getIntentResolver(parentActivity);
+
     excludeSlingerAndStartTargetActivity(parentActivity,
-        intentEnricher.enrichSlingedIntent(parentActivity, uri,
-            resolveIntentToBeSlinged(parentActivity, uri)));
+        intentResolver.getIntentEnricher().enrichSlingedIntent(parentActivity, uri,
+            resolveIntentToBeSlinged(intentResolver, uri)));
   }
 
   private static Uri getOriginatingUriFromIntent(Intent intent) {
@@ -48,8 +41,8 @@ public class Slinger {
         parentActivity);
   }
 
-  private static Intent resolveIntentToBeSlinged(Activity parentActivity, Uri originatingUri) {
-    return getIntentResolver(parentActivity).resolveIntentToSling(originatingUri);
+  private static Intent resolveIntentToBeSlinged(IntentResolver intentResolver, Uri originatingUri) {
+    return intentResolver.resolveIntentToSling(originatingUri);
   }
 
   /**

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
+import pl.allegro.android.slinger.enricher.DefaultIntentEnricher;
+import pl.allegro.android.slinger.enricher.IntentEnricher;
 
 import static android.content.Intent.ACTION_VIEW;
 
@@ -53,5 +55,9 @@ import static android.content.Intent.ACTION_VIEW;
    */
   @NonNull protected Intent getDefaultRedirectIntent(Uri originatingUri) {
     return new Intent(ACTION_VIEW, originatingUri);
+  }
+
+  public IntentEnricher getIntentEnricher(){
+    return new DefaultIntentEnricher();
   }
 }
