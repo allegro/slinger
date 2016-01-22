@@ -3,20 +3,23 @@ package pl.allegro.android.slinger.resolver;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
+import pl.allegro.android.slinger.ReferrerMangler;
 
 import static android.content.Intent.ACTION_VIEW;
 import static android.net.Uri.EMPTY;
 import static android.net.Uri.parse;
-import static pl.allegro.android.slinger.resolver.RedirectRule.builder;
 import static com.google.common.truth.Truth.assertThat;
 import static java.util.Arrays.asList;
 import static org.robolectric.RuntimeEnvironment.application;
+import static pl.allegro.android.slinger.ReferrerMangler.EXTRA_REFERRER_NAME;
+import static pl.allegro.android.slinger.ReferrerMangler.getReferrerUriFromIntent;
+import static pl.allegro.android.slinger.resolver.RedirectRule.builder;
 
 @RunWith(RobolectricGradleTestRunner.class) public class IntentResolverTest {
 
@@ -72,13 +75,47 @@ import static org.robolectric.RuntimeEnvironment.application;
     assertThat(result.getComponent().getClassName()).isEqualTo(ActivityB.class.getName());
   }
 
+  @Test public void shouldEnrichIntentWithReferrerAndOriginatingUri() {
+    //given
+    Activity activity = new Activity();
+    Uri referrerUri = parse("android-app://some.referrer/foo/bar");
+    activity.setIntent(new Intent().putExtra(ReferrerMangler.EXTRA_REFERRER, referrerUri));
+    Uri uriThatStartedActivity = parse("http://www.example.com");
+
+    Intent intentToEnrich = new Intent();
+
+    //when
+    objectUnderTest.enrichIntent(activity, intentToEnrich, uriThatStartedActivity);
+
+    //then
+    assertThat(intentToEnrich.getData()).isEqualTo(uriThatStartedActivity);
+    assertThat(getReferrerUriFromIntent(intentToEnrich)).isEqualTo(referrerUri);
+  }
+
+  @Test public void shouldEnrichIntentWithReferrerStringAndOriginatingUri() {
+    //given
+    Activity activity = new Activity();
+    String referrerString = "android-app://some.referrer/foo/bar";
+    activity.setIntent(new Intent().putExtra(EXTRA_REFERRER_NAME, referrerString));
+    Uri uriThatStartedActivity = parse("http://www.example.com");
+
+    Intent intentToEnrich = new Intent();
+
+    //when
+    objectUnderTest.enrichIntent(activity, intentToEnrich, uriThatStartedActivity);
+
+    //then
+    assertThat(intentToEnrich.getData()).isEqualTo(uriThatStartedActivity);
+    assertThat(getReferrerUriFromIntent(intentToEnrich)).isEqualTo(parse(referrerString));
+  }
+
   private static Context getApplicationContext() {
     return application.getApplicationContext();
   }
 
-  static class ActivityA extends Activity{
+  static class ActivityA extends Activity {
   }
 
-  static class ActivityB extends Activity{
+  static class ActivityB extends Activity {
   }
 }

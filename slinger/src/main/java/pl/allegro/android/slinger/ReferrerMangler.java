@@ -1,4 +1,4 @@
-package pl.allegro.android.slinger.enricher;
+package pl.allegro.android.slinger;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -15,8 +15,8 @@ import static android.os.Build.VERSION_CODES.LOLLIPOP_MR1;
  */
 public final class ReferrerMangler {
 
-  static final String EXTRA_REFERRER = "android.intent.extra.REFERRER";
-  static final String EXTRA_REFERRER_NAME = "android.intent.extra.REFERRER_NAME";
+  public static final String EXTRA_REFERRER = "android.intent.extra.REFERRER";
+  public static final String EXTRA_REFERRER_NAME = "android.intent.extra.REFERRER_NAME";
 
   private ReferrerMangler() {
   }
@@ -36,7 +36,7 @@ public final class ReferrerMangler {
     return getReferrerUriFromIntent(activity.getIntent());
   }
 
-  static Uri getReferrerUriFromIntent(Intent intent) {
+  public static Uri getReferrerUriFromIntent(Intent intent) {
     Uri referrerUri = intent.getParcelableExtra(EXTRA_REFERRER);
     if (referrerUri != null) {
       return referrerUri;

@@ -5,10 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import pl.allegro.android.slinger.enricher.DefaultIntentEnricher;
-import pl.allegro.android.slinger.enricher.IntentEnricher;
-
 import static android.content.Intent.ACTION_VIEW;
+import static pl.allegro.android.slinger.ReferrerMangler.addReferrerToIntent;
+import static pl.allegro.android.slinger.ReferrerMangler.getReferrerUriFromActivity;
 
 /**
  * Class that resolves target {@link Intent} by matching {@link Uri} that started {@link Activity}
@@ -57,7 +56,10 @@ public abstract class IntentResolver {
     return new Intent(ACTION_VIEW, originatingUri);
   }
 
-  public IntentEnricher getIntentEnricher(){
-    return new DefaultIntentEnricher();
+  public Intent enrichIntent(Activity parentActivity, Intent resolvedIntent, Uri originatingUri){
+    // we need to inform our target Activity about originating Uri
+    resolvedIntent.setData(originatingUri);
+
+    return addReferrerToIntent(resolvedIntent, getReferrerUriFromActivity(parentActivity));
   }
 }
