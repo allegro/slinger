@@ -73,7 +73,7 @@ In order to provide other mechanism than regular expression matching you can ove
 ### Enriching Slinged Intents with Referrer and input URL
 
 Slinger enriches Intents with URL and [referrer](http://developer.android.com/reference/android/app/Activity.html#getReferrer()) by default.
-This can be changed by setting custom `IntentEnricher` in `SlingerActivity`
+This can be changed by overriding `enrichIntent` in `IntentResolver`
 
 ## Security considerations
 
