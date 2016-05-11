@@ -5,14 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
+
 import pl.allegro.android.slinger.ReferrerMangler;
 
 import static android.content.Intent.ACTION_VIEW;
-import static android.net.Uri.EMPTY;
 import static android.net.Uri.parse;
 import static com.google.common.truth.Truth.assertThat;
 import static java.util.Arrays.asList;
@@ -21,7 +22,8 @@ import static pl.allegro.android.slinger.ReferrerMangler.EXTRA_REFERRER_NAME;
 import static pl.allegro.android.slinger.ReferrerMangler.getReferrerUriFromIntent;
 import static pl.allegro.android.slinger.resolver.RedirectRule.builder;
 
-@RunWith(RobolectricGradleTestRunner.class) public class IntentResolverTest {
+@RunWith(RobolectricGradleTestRunner.class)
+public class IntentResolverTest {
 
   public static final String PATTERN_FOR_A = "http://example.com/abc\\.html\\?query=a.*";
   public static final String PATTERN_FOR_B = "http://example.com/abc\\.html\\?query=b.*";
@@ -37,7 +39,9 @@ import static pl.allegro.android.slinger.resolver.RedirectRule.builder;
           .build();
 
   private IntentResolver objectUnderTest = new IntentResolver(getActivity()) {
-    @NonNull @Override public Iterable<RedirectRule> getRules() {
+    @NonNull
+    @Override
+    public Iterable<RedirectRule> getRules() {
       return asList(RULE_A, RULE_B);
     }
   };
@@ -46,16 +50,18 @@ import static pl.allegro.android.slinger.resolver.RedirectRule.builder;
     return Robolectric.buildActivity(ActivityA.class).create().get();
   }
 
-  @Test public void shouldReturnDefaultIntent() {
+  @Test
+  public void shouldReturnDefaultIntent() {
 
     //when
-    Intent result = objectUnderTest.resolveIntentToSling(EMPTY);
+    Intent result = objectUnderTest.resolveIntentToSling(Uri.EMPTY);
 
     //then
     assertThat(result.getAction()).isEqualTo(ACTION_VIEW);
   }
 
-  @Test public void shouldReturnIntentForA() {
+  @Test
+  public void shouldReturnIntentForA() {
 
     //when
     Intent result =
@@ -65,7 +71,8 @@ import static pl.allegro.android.slinger.resolver.RedirectRule.builder;
     assertThat(result.getComponent().getClassName()).isEqualTo(ActivityA.class.getName());
   }
 
-  @Test public void shouldReturnIntentForB() {
+  @Test
+  public void shouldReturnIntentForB() {
 
     //when
     Intent result =
@@ -75,7 +82,30 @@ import static pl.allegro.android.slinger.resolver.RedirectRule.builder;
     assertThat(result.getComponent().getClassName()).isEqualTo(ActivityB.class.getName());
   }
 
-  @Test public void shouldEnrichIntentWithReferrerAndOriginatingUri() {
+  @Test
+  public void shouldIndicateThatIntentCanBeResolved() {
+
+    //when
+    boolean result =
+        objectUnderTest.canBeHandledByRedirectRules(parse("http://example.com/abc.html?query=abb"));
+
+    //then
+    assertThat(result).isTrue();
+  }
+
+  @Test
+  public void shouldIndicateThatIntentCannotBeResolved() {
+
+    //when
+    boolean result =
+        objectUnderTest.canBeHandledByRedirectRules(parse("http://google.com"));
+
+    //then
+    assertThat(result).isFalse();
+  }
+
+  @Test
+  public void shouldEnrichIntentWithReferrerAndOriginatingUri() {
     //given
     Activity activity = new Activity();
     Uri referrerUri = parse("android-app://some.referrer/foo/bar");
@@ -92,7 +122,8 @@ import static pl.allegro.android.slinger.resolver.RedirectRule.builder;
     assertThat(getReferrerUriFromIntent(intentToEnrich)).isEqualTo(referrerUri);
   }
 
-  @Test public void shouldEnrichIntentWithReferrerStringAndOriginatingUri() {
+  @Test
+  public void shouldEnrichIntentWithReferrerStringAndOriginatingUri() {
     //given
     Activity activity = new Activity();
     String referrerString = "android-app://some.referrer/foo/bar";

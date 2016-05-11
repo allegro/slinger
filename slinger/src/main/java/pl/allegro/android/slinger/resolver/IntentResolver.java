@@ -25,17 +25,28 @@ public abstract class IntentResolver {
    * @param originatingUri {@link Uri} retrieved from {@link Intent#getData()}
    * @return {@link Intent} from matching {@link RedirectRule}
    */
-  @NonNull public Intent resolveIntentToSling(@NonNull Uri originatingUri) {
-    Intent intentToSling = getDefaultRedirectIntent(originatingUri);
+  @NonNull
+  public Intent resolveIntentToSling(@NonNull Uri originatingUri) {
+    Intent matchingIntent = getMatchingIntentForRedirectRules(originatingUri);
+    return matchingIntent != null ? matchingIntent : getDefaultRedirectIntent(originatingUri);
+  }
 
+  /**
+   * Checks if {@link Uri} can be handled by provided redirect rules.
+   * @param originatingUri {@link Uri} to check
+   */
+  public boolean canUriBeHandledByRedirectRules(@NonNull Uri originatingUri) {
+    return getMatchingIntentForRedirectRules(originatingUri) != null;
+  }
+
+  private Intent getMatchingIntentForRedirectRules(@NonNull Uri originatingUri) {
     for (RedirectRule rule : getRules()) {
       if (isUriMatchingPattern(originatingUri, rule)) {
-        intentToSling = rule.getIntent();
-        break;
+        return rule.getIntent();
       }
     }
 
-    return intentToSling;
+    return null;
   }
 
   private boolean isUriMatchingPattern(Uri originatingUri, RedirectRule redirectable) {
@@ -45,18 +56,20 @@ public abstract class IntentResolver {
   /**
    * @return {@link Iterable} with {@link RedirectRule}s
    */
-  @NonNull public abstract Iterable<RedirectRule> getRules();
+  @NonNull
+  public abstract Iterable<RedirectRule> getRules();
 
   /**
    * @param originatingUri that started {@link Activity}
    * @return default {@link Intent} when there is no {@link RedirectRule} matching {@link Uri} that
    * started {@link Activity}
    */
-  @NonNull protected Intent getDefaultRedirectIntent(Uri originatingUri) {
+  @NonNull
+  protected Intent getDefaultRedirectIntent(Uri originatingUri) {
     return new Intent(ACTION_VIEW, originatingUri);
   }
 
-  public Intent enrichIntent(Activity parentActivity, Intent resolvedIntent, Uri originatingUri){
+  public Intent enrichIntent(Activity parentActivity, Intent resolvedIntent, Uri originatingUri) {
     // we need to inform our target Activity about originating Uri
     resolvedIntent.setData(originatingUri);
 
