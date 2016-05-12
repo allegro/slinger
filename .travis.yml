@@ -22,7 +22,7 @@ cache:
     - $HOME/.gradle
 
 script:
-  - ./gradlew build jacocoTestReport
+  - ./gradlew build jacocoTestReport --debug
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
