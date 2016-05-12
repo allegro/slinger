@@ -43,11 +43,7 @@ public final class ReferrerMangler {
     }
 
     String referrer = intent.getStringExtra(EXTRA_REFERRER_NAME);
-    if (referrer != null) {
-      return Uri.parse(referrer);
-    }
-
-    return null;
+      return referrer != null ? Uri.parse(referrer) : null;
   }
 
   @TargetApi(LOLLIPOP_MR1) @Nullable
