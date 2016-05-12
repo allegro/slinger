@@ -47,10 +47,6 @@ dependencies {
   testCompile rootProject.ext.truth
 }
 
-jacoco {
-  toolVersion = "0.7.5.201505241946"
-}
-
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
