@@ -87,7 +87,7 @@ public class IntentResolverTest {
 
     //when
     boolean result =
-        objectUnderTest.canBeHandledByRedirectRules(parse("http://example.com/abc.html?query=abb"));
+        objectUnderTest.canUriBeHandledByRedirectRules(parse("http://example.com/abc.html?query=abb"));
 
     //then
     assertThat(result).isTrue();
@@ -98,7 +98,7 @@ public class IntentResolverTest {
 
     //when
     boolean result =
-        objectUnderTest.canBeHandledByRedirectRules(parse("http://google.com"));
+        objectUnderTest.canUriBeHandledByRedirectRules(parse("http://google.com"));
 
     //then
     assertThat(result).isFalse();

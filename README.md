@@ -75,6 +75,25 @@ In order to provide other mechanism than regular expression matching you can ove
 Slinger enriches Intents with URL and [referrer](http://developer.android.com/reference/android/app/Activity.html#getReferrer()) by default.
 This can be changed by overriding `enrichIntent` in `IntentResolver`
 
+```java
+@Keep
+public class ExampleIntentResolver extends IntentResolver {
+
+  @NonNull
+  @Override
+  public Intent resolveIntentToSling(@NonNull Uri originatingUri) {
+    // implement own intent resolving strategy here
+    return super.resolveIntentToSling(originatingUri);
+  }
+  
+  @Override
+  public Intent enrichIntent(Activity parentActivity, Intent resolvedIntent, Uri originatingUri) {
+    // enrich resolved intent with custom data
+    return super.enrichIntent(parentActivity, resolvedIntent, originatingUri).putExtra("foo","bar");
+  }
+}
+```
+
 ## Security considerations
 
 Slinger does not sanitize input in any way. So providing security for application is your responsibility.

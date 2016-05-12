@@ -69,6 +69,7 @@ public abstract class IntentResolver {
     return new Intent(ACTION_VIEW, originatingUri);
   }
 
+  @NonNull
   public Intent enrichIntent(Activity parentActivity, Intent resolvedIntent, Uri originatingUri) {
     // we need to inform our target Activity about originating Uri
     resolvedIntent.setData(originatingUri);
