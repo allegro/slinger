@@ -1,15 +1,16 @@
-package pl.allegro.android.slinger.enricher;
+package pl.allegro.android.slinger;
 
 import android.content.Intent;
 import android.net.Uri;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 
 import static android.net.Uri.parse;
-import static pl.allegro.android.slinger.enricher.ReferrerMangler.addReferrerToIntent;
-import static pl.allegro.android.slinger.enricher.ReferrerMangler.getReferrerUriFromIntent;
 import static com.google.common.truth.Truth.assertThat;
+import static pl.allegro.android.slinger.ReferrerMangler.addReferrerToIntent;
+import static pl.allegro.android.slinger.ReferrerMangler.getReferrerUriFromIntent;
 
 @RunWith(RobolectricGradleTestRunner.class) public class ReferrerManglerTest {
 

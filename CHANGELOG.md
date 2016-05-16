@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Version 0.2.0 *(2016-01-22)*
+----------------------------
+
+ * Instantiating IntentResolver from manifest
+ * Proguard consumer files added
+ * 
+
 Version 0.1.1 *(2015-10-22)*
 ----------------------------
 

@@ -1,23 +1,28 @@
 package pl.allegro.android.slinger;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.support.annotation.NonNull;
-import pl.allegro.android.slinger.util.IntentMatchers.IsIntentWithAction;
-import pl.allegro.android.slinger.util.IntentMatchers.IsIntentWithPackageName;
+
 import com.google.common.collect.ImmutableList;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.res.builder.RobolectricPackageManager;
 
-import static pl.allegro.android.slinger.IntentStarterTest.Utils.preparePackageManager;
+import java.util.ArrayList;
+import java.util.List;
+
+import pl.allegro.android.slinger.util.IntentMatchers.IsIntentWithAction;
+import pl.allegro.android.slinger.util.IntentMatchers.IsIntentWithPackageName;
+
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.argThat;
@@ -26,6 +31,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static pl.allegro.android.slinger.IntentStarterTest.Utils.preparePackageManager;
 
 @RunWith(RobolectricGradleTestRunner.class) public class IntentStarterTest {
 
@@ -76,7 +82,8 @@ import static org.mockito.Mockito.when;
     assertThat(targetIntents.get(0).getPackage()).isEqualTo(Activity1.class.getPackage().getName());
   }
 
-  @Test public void whenThereIsDefaultHandlerThenActivityWillBeStartedWithOriginalIntent() {
+  @SuppressWarnings("WrongConstant") @Test
+  public void whenThereIsDefaultHandlerThenActivityWillBeStartedWithOriginalIntent() {
     // given
     Intent intent = new Intent();
 
@@ -99,7 +106,7 @@ import static org.mockito.Mockito.when;
     return spy(Activity1.class);
   }
 
-  @Test
+  @SuppressWarnings("WrongConstant") @Test
   public void whenIgnoredActivityIsDefaultHandlerAndThereIsOnlyOneMoreActivityAbleToHandleTheIntentThenTheOtherOneIsStarted() {
     // given
     Intent intent = new Intent();
@@ -122,7 +129,7 @@ import static org.mockito.Mockito.when;
         argThat(new IsIntentWithPackageName("pl.allegro.android.slinger")));
   }
 
-  @Test
+  @SuppressWarnings("WrongConstant") @Test
   public void whenIgnoredActivityIsDefaultHandlerAndThereAreMoreActivitiesAbleToHandleTheIntentThenChooserIsPresented() {
     // given
     Intent intent = new Intent();
@@ -162,6 +169,48 @@ import static org.mockito.Mockito.when;
         argThat(new IsIntentWithPackageName("pl.allegro.android.slinger")));
   }
 
+  @Test(expected = ActivityNotFoundException.class)
+  public void whenThereIsNoActivityAbleToHandleIntent() {
+    // given
+
+    Intent intentToBeResolved = new Intent().setComponent(
+        new ComponentName(RuntimeEnvironment.application.getPackageName(),
+            Activity1.class.getName()));
+
+    Intent intentToStart = new Intent().setComponent(
+        new ComponentName(RuntimeEnvironment.application.getPackageName(),
+            Activity2.class.getName()));
+
+    PackageManager packageManager = preparePackageManager(intentToBeResolved,
+        ImmutableList.<Class<? extends Activity>>of(Activity1.class));
+    IntentStarter objectUnderTest =
+        new IntentStarter(packageManager, intentToStart, Activity1.class, "", null);
+    Activity parentActivity = getParentActivitySpy();
+
+    // when
+    objectUnderTest.startActivity(parentActivity);
+  }
+
+  @Test(expected = ActivityNotFoundException.class)
+  public void whenThereIsNoActivityAbleToHandleIntentAndNoComponentInIntent() {
+    // given
+
+    Intent intentToBeResolved = new Intent().setComponent(
+        new ComponentName(RuntimeEnvironment.application.getPackageName(),
+            Activity1.class.getName()));
+
+    Intent intentToStart = new Intent().setPackage(RuntimeEnvironment.application.getPackageName());
+
+    PackageManager packageManager = preparePackageManager(intentToBeResolved,
+        ImmutableList.<Class<? extends Activity>>of(Activity1.class));
+    IntentStarter objectUnderTest =
+        new IntentStarter(packageManager, intentToStart, Activity1.class, "", null);
+    Activity parentActivity = getParentActivitySpy();
+
+    // when
+    objectUnderTest.startActivity(parentActivity);
+  }
+
   @Test public void whenThereAreMultipleActivitiesAbleToHandleIntentThenChooserWillBePresented() {
     // given
     Intent intent = new Intent();
@@ -193,7 +242,7 @@ import static org.mockito.Mockito.when;
 
   static class Utils {
 
-    private static ActivityInfo createActvitiyInfo(Class<? extends Activity> clazz) {
+    private static ActivityInfo createActivityInfo(Class<? extends Activity> clazz) {
       ActivityInfo activityInfo = new ActivityInfo();
       activityInfo.name = clazz.getCanonicalName();
       activityInfo.packageName = clazz.getPackage().getName();
@@ -206,7 +255,7 @@ import static org.mockito.Mockito.when;
 
     static ResolveInfo createResolveInfo(Class<? extends Activity> clazz, boolean isDefault) {
       ResolveInfo resolveInfo = new ResolveInfo();
-      resolveInfo.activityInfo = createActvitiyInfo(clazz);
+      resolveInfo.activityInfo = createActivityInfo(clazz);
       resolveInfo.isDefault = isDefault;
       return resolveInfo;
     }

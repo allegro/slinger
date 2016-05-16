@@ -5,6 +5,8 @@ android:
     - android-23
     - build-tools-23.0.1
     - extra-android-m2repository
+    - tools
+    - platform-tools
 
 jdk:
   - oraclejdk7
@@ -19,4 +21,8 @@ cache:
     - $HOME/.m2
     - $HOME/.gradle
 
-script: ./gradlew build test
+script:
+  - ./gradlew build jacocoTestReport
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

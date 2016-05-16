@@ -6,64 +6,93 @@ Slinger - deep linking library for Android
 Slinger is a small Android library for handling custom Uri which uses regular expression to
 catch and route URLs which won’t be handled by normal [intent-filter](http://developer.android.com/guide/topics/manifest/data-element.html#path) mechanism.
 
-With slinger it’s possible to have deep links for quite complicated URLs.
+With slinger it’s possible to provide deep links for quite complicated URLs.
 
 ![Scheme of Slinger resolving Activities using regular expression](assets/slinger_resolving_mechanism.png)
 
 ## How do I use it?
 
-Declare Activity in your manifest that will handle links within particular domain.
+Declare Activity in your manifest with your own `IntentResolver` that will handle links within particular domain.
 
 ```xml
 <activity
-    android:name=".MySlingerRoutingActivity"
-    android:noHistory="true">
+  android:name="pl.allegro.android.slinger.SlingerActivity"
+  android:excludeFromRecents="true"
+  android:noHistory="true"
+  android:theme="@style/android:Theme.NoDisplay">
+  <meta-data
+    android:name="IntentResolver"
+    android:value="com.my.appp.ExampleIntentResolver"/>
     <intent-filter android:label="@string/app_name">
-		<data android:host="example.com"
-		      android:pathPattern=".*"
-              android:scheme="http" />
+      <action android:name="android.intent.action.VIEW"/>
+      <category android:name="android.intent.category.DEFAULT"/>
+      <category android:name="android.intent.category.BROWSABLE"/>
+      <data
+        android:host="example.com"
+        android:pathPattern="/.*"
+        android:scheme="http"/>
     </intent-filter>
 </activity>
 ```
 
-In `MySlingerRoutingActivity` provide custom `IntentResolver` that redirect URLs
-to concrete Activities based on regular expressions.
+`IntentResolver` is a class that redirects URLs to concrete Activities based on regular expressions.
 
 ```java
-public class MySlingerRoutingActivity extends SlingerActivity {
 
-  ...
-  
-  private RedirectRule getRedirectRuleForAboutActivity() {
+@Keep
+public class ExampleIntentResolver extends IntentResolver {
+
+  private List<RedirectRule> rules;
+
+  public ExampleIntentResolver(Activity activity) {
+    super(activity);
+    rules = asList(getRedirectRuleForAboutActivity(activity));
+  }
+
+  private RedirectRule getRedirectRuleForAboutActivity(Activity activity) {
     return RedirectRule.builder()
-                       .intent(new Intent(context, MyConcreteActivityA.class))
+                       .intent(new Intent(activity, MyConcreteActivityA.class))
                        .pattern("http://example.com/abc\\\\.html\\\\?query=a.*")
                        .build();
   }
-  
-  @Override protected IntentResolver getIntentResolver() {
-    return new IntentResolver(asList(getRedirectRuleForAboutActivity()));
+
+  @NonNull @Override public Iterable<RedirectRule> getRules() {
+    return rules;
   }
 }
 ```
 
-In case when no redirect rule is matched Slinger will fallback to default URL handler (usually browser).
+In case when no redirect rule is matched `IntentResolver` will fallback to default Intent - `Uri` with `ACTION_VIEW`.
 
 ## Customizing
 
 ### Matching Activities
 
-`IntentResolver` can be extended and `resolveIntentToSling` method can be overridden to match URLs using
-other mechanism than regular expression matching.
+In order to provide other mechanism than regular expression matching you can override `resolveIntentToSling` in `IntentResolver`
 
 ### Enriching Slinged Intents with Referrer and input URL
 
 Slinger enriches Intents with URL and [referrer](http://developer.android.com/reference/android/app/Activity.html#getReferrer()) by default.
-This can be changed by overriding `enrichIntent` method in `SlingerActivity`
+This can be changed by overriding `enrichIntent` in `IntentResolver`
 
-### Fallback mechanism when no rule is matched
+```java
+@Keep
+public class ExampleIntentResolver extends IntentResolver {
 
-To provide different way of starting Activities just override `excludeSlingerAndStartTargetActivity` method in `SlingerActivity`
+  @NonNull
+  @Override
+  public Intent resolveIntentToSling(@NonNull Uri originatingUri) {
+    // implement own intent resolving strategy here
+    return super.resolveIntentToSling(originatingUri);
+  }
+  
+  @Override
+  public Intent enrichIntent(Activity parentActivity, Intent resolvedIntent, Uri originatingUri) {
+    // enrich resolved intent with custom data
+    return super.enrichIntent(parentActivity, resolvedIntent, originatingUri).putExtra("foo","bar");
+  }
+}
+```
 
 ## Security considerations
 

@@ -7,13 +7,14 @@ buildscript {
     }
 	
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.3.1'
+        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.1'
         classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
 	}
 }
 
 plugins {
-    id 'pl.allegro.tech.build.axion-release' version '1.2.4'
+    id 'pl.allegro.tech.build.axion-release' version '1.3.4'
 }
 
 apply plugin: 'io.codearte.nexus-staging'
@@ -41,11 +42,11 @@ ext {
   minSdkVersion = 9
   targetSdkVersion = 23
 
-  supportAnnotations = 'com.android.support:support-annotations:23.0.0'
+  supportAnnotations = 'com.android.support:support-annotations:23.1.1'
 
   junit = 'junit:junit:4.12'
   robolectric = 'org.robolectric:robolectric:3.0'
   mavenAntTasks = 'org.apache.maven:maven-ant-tasks:2.1.3'
   mockitoCore = 'org.mockito:mockito-core:1.10.19'
-  truth = 'com.google.truth:truth:0.26'
+  truth = 'com.google.truth:truth:0.28'
 }
